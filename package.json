@@ -4,6 +4,7 @@
 	"version": "1.0.0",
 	"license": "MPLv2",
 	"main": "./dist/main.js",
+	"author": "Oliver Paraskos",
 	"engines": {
 		"node": "*"
 	},
