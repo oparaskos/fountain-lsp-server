@@ -20,7 +20,6 @@ jobs:
         npm run lint
         npm run test
         npm run build
-        npm publish --dry-run
       env:
         CI: true
     - run: npm pack
