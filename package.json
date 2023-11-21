@@ -1,15 +1,15 @@
 {
 	"name": "fountain-lsp-server",
-	"private": true,
 	"description": "Fountain Language Server",
 	"version": "1.0.0",
-	"license": "MIT",
+	"license": "MPLv2",
+	"main": "./dist/main.js",
 	"engines": {
 		"node": "*"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/oparaskos/vscode-fountain"
+		"url": "https://github.com/oparaskos/fountain-lsp-server"
 	},
 	"dependencies": {
 		"fountain-parser": "^1.1.1",
@@ -23,11 +23,13 @@
 		"yaml": "^2.2.2"
 	},
 	"scripts": {
+		"start": "ts-node ./src/server.ts --stdio",
 		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
 		"watch": "npm run build -- --watch"
 	},
 	"devDependencies": {
 		"@types/sentiment": "^5.0.1",
-		"esbuild": "^0.15.10"
+		"esbuild": "^0.15.10",
+		"ts-node": "^10.9.1"
 	}
 }
