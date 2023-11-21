@@ -25,7 +25,7 @@ import { characterCompletions, closingCompletions, dialogueCompletions, openingC
 import { isTitlePage } from "./util/isTitlePage";
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
 import { guessGender } from './guessGender';
-import { getConfig as getFountainrc } from './fountainrc';
+import { FountainRC, getConfig as getFountainrc } from './fountainrc';
 import { logger } from './logger';
 import { findRacialIdentity } from './racialIdentity';
 import { getDocumentation } from './documentation';
@@ -96,7 +96,7 @@ export interface EnrichedCharacterStats extends CharacterStats {
     RacialIdentity: string;
 }
 
-function enrichCharacterStats(it: {Name: string}, fountainrc: any) {
+function enrichCharacterStats(it: {Name: string}, fountainrc: FountainRC) {
     return {
         ...it,
         Gender: guessGender(it.Name, fountainrc),
@@ -260,7 +260,7 @@ function locationName(codeLens: CodeLens) {
     return name[0] + name.slice(1).toLocaleLowerCase();
 }
 
-function getStatsForCharacter(parsedScript: FountainScript, fountainrc: any, settings: ExampleSettings, characterName: string): Partial<EnrichedCharacterStats> {
+function getStatsForCharacter(parsedScript: FountainScript, fountainrc: FountainRC, settings: ExampleSettings, characterName: string): Partial<EnrichedCharacterStats> {
     const result: CharacterStats[] = parsedScript.statsPerCharacter;
     const characterStats = result.find(it => it.Name === characterName) || {
         Name: characterName
