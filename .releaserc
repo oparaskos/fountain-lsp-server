@@ -35,8 +35,8 @@
       {
         "assets": [
           {
-            "path": "fountain-parser-*.tgz",
-            "label": "fountain-parser-${nextRelease.version}.tgz"
+            "path": "fountain-lsp-server-*.tgz",
+            "label": "fountain-lsp-server-${nextRelease.version}.tgz"
           }
         ]
       }
