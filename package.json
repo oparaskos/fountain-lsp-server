@@ -3,7 +3,10 @@
 	"description": "Fountain Language Server",
 	"version": "1.0.0",
 	"license": "MPLv2",
-	"main": "./dist/main.js",
+	"main": "./dist/server.js",
+	"bin": {
+		"fountain-lsp-server": "./bin/fountain-lsp-server"
+	},
 	"author": "Oliver Paraskos",
 	"engines": {
 		"node": "*"
@@ -27,8 +30,10 @@
 		"test": "ts-mocha tests/**/*.spec.ts",
 		"lint": "eslint src/ tests/",
 		"start": "ts-node ./src/server.ts --stdio",
-		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
-		"watch": "npm run build -- --watch"
+		"build": "npm run build:cjs && npm run build:tsc",
+		"build:tsc": "tsc",
+		"build:cjs": "esbuild ./src/server.ts --bundle --outfile=dist/bundle.cjs.js --external:vscode --format=cjs --platform=node --sourcemap",
+		"watch": "npm run build:tsc -- --watch"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.3.11",
@@ -42,5 +47,9 @@
 		"mocha": "^10.2.0",
 		"ts-mocha": "^10.0.0",
 		"ts-node": "^10.9.1"
-	}
+	},
+	"files": [
+		"dist/",
+		"*.schema.json"
+	]
 }

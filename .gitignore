@@ -4,3 +4,4 @@ node_modules
 dist/
 *.vsix
 .DS_Store
+fountain-lsp-server*.tgz
