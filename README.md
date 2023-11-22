@@ -1,5 +1,3 @@
-
-
 # <img src="https://raw.githubusercontent.com/oparaskos/vscode-fountain/main/assets/fountain-logo-monochrome%401x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server
 
 This is a Language Server for [fountain](https://fountain.io/) files, a simple markup syntax for writing, editing, and sharing screenplays in plain, human-readable text.
@@ -11,6 +9,15 @@ The language server is built on [vscode-languageserver](https://www.npmjs.com/pa
  - [x] Code Completions for Title Page attributes, scene headings, etc.
  - [x] CodeLens support for characters, scenes and locations.
  - [x] Statistics to be consumed by a webview, by character, location and scene; and more granularly by character gender and race.
+
+
+## Running the language server
+
+If installed through NPM then there should be a binary `fountain-lsp-server` in `node_modules/.bin`
+
+Otherwise you can use `node dist/bundle.cjs.js [options]` from the package file in GitHub releases
+or `import` `dist/server` from the node module to roll it into your own application.
+
 
 ## Additional information
 
