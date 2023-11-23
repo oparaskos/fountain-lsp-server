@@ -16,7 +16,7 @@
 		"url": "https://github.com/oparaskos/fountain-lsp-server"
 	},
 	"dependencies": {
-		"fountain-parser": "^1.1.1",
+		"fountain-parser": "^1.1.2",
 		"gender-detection-from-name": "^1.7.4",
 		"memoize": "^0.1.1",
 		"readability-scores": "github:oparaskos/readability-scores#patch-1",
