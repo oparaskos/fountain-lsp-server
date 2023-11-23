@@ -1,7 +1,7 @@
 {
 	"name": "fountain-lsp-server",
 	"description": "Fountain Language Server",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"license": "MPLv2",
 	"main": "./dist/server.js",
 	"bin": {

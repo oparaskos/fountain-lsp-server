@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.2...v1.0.3) (2023-11-23)
+
+
+### Bug Fixes
+
+* update package-lock.json ([963e299](https://github.com/oparaskos/fountain-lsp-server/commit/963e29939779f04dbe27207954e49fdd3a9eabd7))
+
 ## [1.0.2](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.1...v1.0.2) (2023-11-23)
 
 
