@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.1...v1.0.2) (2023-11-23)
+
+
+### Bug Fixes
+
+* bump fountain-parser ([cec6335](https://github.com/oparaskos/fountain-lsp-server/commit/cec6335a25caabd68db9f93c76ed485ab8f9ce28))
+
 ## [1.0.1](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.0...v1.0.1) (2023-11-22)
 
 
