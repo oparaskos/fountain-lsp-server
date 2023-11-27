@@ -19,6 +19,7 @@
 		"fountain-parser": "^1.1.2",
 		"gender-detection-from-name": "^1.7.4",
 		"memoize": "^0.1.1",
+		"memoize-utils": "^1.0.1",
 		"readability-scores": "github:oparaskos/readability-scores#patch-1",
 		"sentiment": "^5.0.2",
 		"vscode-languageserver": "^7.0.0",
@@ -30,7 +31,8 @@
 		"test": "ts-mocha tests/**/*.spec.ts",
 		"lint": "eslint src/ tests/",
 		"start": "ts-node ./src/server.ts --stdio",
-		"build": "npm run build:cjs && npm run build:tsc",
+		"build": "npm run build:docs && npm run build:cjs && npm run build:tsc",
+		"build:docs": "cp -R src/fountain-docs dist/",
 		"build:tsc": "tsc",
 		"build:cjs": "esbuild ./src/server.ts --bundle --outfile=dist/bundle.cjs.js --external:vscode --format=cjs --platform=node --sourcemap",
 		"watch": "npm run build:tsc -- --watch"

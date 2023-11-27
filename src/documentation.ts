@@ -2,26 +2,34 @@ import path from 'path';
 import { readFile, stat } from 'fs/promises';
 import { logger } from './logger';
 import { Hover } from 'vscode-languageserver';
-
-const docsFolderPath = path.normalize(path.join(__dirname, '../../fountain-docs'));
+import { memoize } from 'memoize-utils/decorator';
 
 const EMPTY_DOCS = {
-	contents: ""
+    contents: ""
 };
-// TODO: docs cache.
-export async function getDocumentation(topic: string): Promise<Hover> {
-	try {
-		const documentPath = path.join(docsFolderPath, `syntax.${topic}.md`);
-		try {
-			if ((await stat(documentPath)).isFile()) {
-				return {contents: await readFile(documentPath, 'utf8')};
-			}
-		} catch(e) {
-			logger.trace(`No doc file at ${documentPath}`);
-		}
-		return EMPTY_DOCS;
-	} catch(e: unknown) {
-		logger.error('Could not load documentation', e);
-		return EMPTY_DOCS; // TODO:
-	}
+
+class DocumentationProvider {
+    constructor(private docsFolderPath = path.normalize(path.join(__dirname, 'fountain-docs'))) { }
+
+    @memoize()
+    async getDocumentation(topic: string): Promise<Hover> {
+        try {
+            const documentPath = path.join(this.docsFolderPath, `syntax.${topic}.md`);
+            try {
+                if ((await stat(documentPath)).isFile()) {
+                    const buf = await readFile(documentPath, 'utf8')
+                    return { contents: buf.toString() };
+                }
+            } catch (e) {
+                logger.trace(`No doc file at ${documentPath}`);
+            }
+            return EMPTY_DOCS;
+        } catch (e: unknown) {
+            logger.error('Could not load documentation', e);
+            return EMPTY_DOCS;
+        }
+    }
 }
+
+const _instance = new DocumentationProvider();
+export const getDocumentation = _instance.getDocumentation.bind(_instance);

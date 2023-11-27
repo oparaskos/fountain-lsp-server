@@ -1,6 +1,7 @@
-
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from "vscode-languageserver";
 import { FountainTitlePage, FountainScript } from "fountain-parser";
+import { isTitlePage } from "./util/isTitlePage";
+
 
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
 * White Draft (original)
@@ -83,32 +84,30 @@ export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocu
     const completions: CompletionItem[] = [];
     const titlePage = parsedDocument.children[0];
     const attributes = (titlePage as FountainTitlePage)?.attributes || {};
-    // if (currentLine.indexOf(":") == -1) return [];
-
-    if (!attributes["title"])
+    const attributeNames = Object.keys(attributes).map(it => it.replace(' ', '_').toLowerCase())
+    if (!attributeNames.includes("title"))
         completions.push({ label: "Title", detail: "The title of the screenplay", kind: CompletionItemKind.Property });
-    if (!attributes["credit"])
+    if (!attributeNames.includes("credit"))
         completions.push({ label: "Credit", detail: "How the author is credited", documentation: 'Inserted between the title and the author. Good practice is to simply use "Written by" (avoid "Created by" etc...).', kind: CompletionItemKind.Property });
-    if (!attributes["author"])
+    if (!attributeNames.includes("author"))
         completions.push({ label: "Author", detail: "The name of the author", documentation: "This is you! If there are several authors, you can optionally use the 'authors' tag instead.", kind: CompletionItemKind.Property });
-    if (!attributes["source"])
+    if (!attributeNames.includes("source"))
         completions.push({ label: "Source", detail: "An additional source for the screenplay", documentation: "This will be inserted below the author, and is useful if the story has an additional source (such as 'Original story by x', 'Based on the novel by x', etc...)", kind: CompletionItemKind.Property });
-    if (!attributes["notes"])
+    if (!attributeNames.includes("notes"))
         completions.push({ label: "Notes", detail: "Additional notes", documentation: 'Any additional notes you wish to include in the title page', kind: CompletionItemKind.Property });
-    if (!attributes["draft_date"])
+    if (!attributeNames.includes("draft_date"))
         completions.push({ label: "Draft Date", detail: "The date of the current draft", documentation: 'Useful if you have several drafts and need to keep track of when they were written', kind: CompletionItemKind.Property });
-    if (!attributes["date"])
+    if (!attributeNames.includes("date"))
         completions.push({ label: "Date", detail: "The date of the screenplay", documentation: 'Only include the date it if necessary for production purposes. Someone reading your screenplay does not generally need to know when it was written.', kind: CompletionItemKind.Property });
-    if (!attributes["contact"] || !attributes["contact_info"])
-        completions.push({ label: "Contact", detail: "Contact details", documentation: 'Your contact details (Address, email, etc...)', kind: CompletionItemKind.Property });
-    if (!attributes["copyright"])
+    if (!attributeNames.includes("copyright"))
         completions.push({ label: "Copyright", detail: "Copyright information", documentation: "**Warning:** Including copyright information tends to be unecessary, and may even seem unprofessional in some cases.", kind: CompletionItemKind.Property, deprecated: true });
-    if (!attributes["watermark"])
+    if (!attributeNames.includes("watermark"))
         completions.push({ label: "Watermark", detail: "A watermark displayed on every page", documentation: 'A watermark displayed diagonally on every single page', kind: CompletionItemKind.Property });
-    if (!attributes["font"])
+    if (!attributeNames.includes("font"))
         completions.push({ label: "Font", detail: "The font used in the screenplay", documentation: `Generally a monospace courier-type font. BetterFountain's default is [Courier Prime](https://quoteunquoteapps.com/courierprime/), with added support for cyrillic.`, kind: CompletionItemKind.Property });
-    if (!attributes["revision"])
+    if (!attributeNames.includes("revision"))
         completions.push({ label: "Revision", detail: "The name of the current and past revisions", documentation: revisionDocumentation, kind: CompletionItemKind.Property });
+    completions.push({ label: "Contact", detail: "Contact details", documentation: 'Your contact details (Address, email, etc...)', kind: CompletionItemKind.Property });
     completions.push({ label: "TL", detail: "Top Left", documentation: "Additional content in the top left of the title page", kind: CompletionItemKind.Property });
     completions.push({ label: "TC", detail: "Top Center", documentation: "Additional content in the top center of the title page", kind: CompletionItemKind.Property });
     completions.push({ label: "TR", detail: "Top Right", documentation: "Additional content in the top right of the title page", kind: CompletionItemKind.Property });
@@ -118,5 +117,33 @@ export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocu
     completions.push({ label: 'Header', detail: "Header used throughout the document", documentation: "This will be printed in the top left of every single page, excluding the title page. Can also be set globally by the 'Page Header' setting", kind: CompletionItemKind.Property });
     completions.push({ label: 'Footer', detail: "Header used throughout the document", documentation: "This will be printed in the bottom left of every single page, excluding the title page. Can also be set globally by the 'Page Footer' setting", kind: CompletionItemKind.Property });
 
+    return completions;
+};
+
+export const handleCompletions = (parsedDocuments: Record<string, FountainScript>, lines: Record<string, string[]>) => (documentPosition: TextDocumentPositionParams): CompletionItem[] => {
+    const completions: CompletionItem[] = [];
+
+    const parsedScript = parsedDocuments[documentPosition.textDocument.uri];
+    const currentLine = lines[documentPosition.textDocument.uri][documentPosition.position.line];
+
+    // Blank page...
+    if (lines[documentPosition.textDocument.uri].join("").trim().length === 0) {
+        completions.push(...openingCompletions(currentLine, parsedScript));
+        completions.push(...titlePageCompletions(currentLine, parsedScript));
+        completions.push(...sceneCompletions(currentLine, parsedScript));
+        return completions;
+    }
+
+    // Not a blank page.
+    if (isTitlePage(documentPosition, parsedScript)) {
+        completions.push(...titlePageCompletions(currentLine, parsedScript));
+    } else {
+        completions.push(...openingCompletions(currentLine, parsedScript));
+        completions.push(...sceneCompletions(currentLine, parsedScript));
+        completions.push(...characterCompletions(currentLine, parsedScript));
+        completions.push(...dialogueCompletions(currentLine, parsedScript));
+        completions.push(...transitionCompletions(currentLine, parsedScript));
+        completions.push(...closingCompletions(currentLine, parsedScript));
+    }
     return completions;
 };
