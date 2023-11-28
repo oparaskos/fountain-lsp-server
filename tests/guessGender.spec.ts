@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 import { guessGender } from "../src/guessGender";
+import { FountainConfig } from '../src/config/FountainConfig';
+import { FountainConfigFactory } from '../src/config/FountainConfigFactory';
 
 describe("Guess Gender from character names", () => {
-    const fountainrc = {
+    const fountainrc = new FountainConfigFactory().fromObject({
         characters: {
             'MR SMITH': {
                 gender: 'neuter'
@@ -15,7 +17,7 @@ describe("Guess Gender from character names", () => {
             }
         },
         locale: 'en'
-    };
+    });
 
     const expected = {
         'JOHN': 'male',

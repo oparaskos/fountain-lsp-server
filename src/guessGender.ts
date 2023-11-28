@@ -1,5 +1,5 @@
 import { getGender } from "gender-detection-from-name";
-import { FountainRC, findCharacterInConfig } from "./fountainrc";
+import { FountainConfig } from './config/FountainConfig';
 
 const DEFAULT_LOCALE = "en" as const;
 const UNKNOWN_GENDER = 'unknown' as const;
@@ -59,9 +59,9 @@ const WORDS_INDICATING_MALE_CHARACTER = [
  * @param config 
  * @returns 
  */
-export function guessGender(rawName: string, config: FountainRC) {
+export function guessGender(rawName: string, config: FountainConfig) {
 	try {
-		const configCharacter = findCharacterInConfig(rawName, config);
+		const configCharacter = config.findCharacter(rawName);
 		if (configCharacter?.gender) return (configCharacter.gender as string).toLowerCase();
 		// Guess based on common english names using a library TODO: find a more comprehensive one..
 		const name = rawName.toLocaleLowerCase().replace(/young|old|adult|kid/ig, '');
@@ -82,7 +82,7 @@ export function guessGender(rawName: string, config: FountainRC) {
 	}
 }
 
-function supportedLocale(config: FountainRC): "en" | "it" {
+function supportedLocale(config: FountainConfig): "en" | "it" {
 	const configuredLocale = config?.locale || DEFAULT_LOCALE;
 	if((SUPPORTED_LOCALES as string[]).includes(configuredLocale)) {
 		return configuredLocale as typeof SUPPORTED_LOCALES[0];

@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { findRacialIdentity } from "../src/racialIdentity";
+import { FountainConfigFactory } from '../src/config/FountainConfigFactory';
 
 describe("Get racial identity from character names (only via fountainrc, no guesswork magic)", () => {
-    const fountainrc = {
+    const fountainrc = new FountainConfigFactory().fromObject({
         characters: {
             'MR SMITH': {
                 'racial identity': 'white/british'
@@ -13,7 +14,7 @@ describe("Get racial identity from character names (only via fountainrc, no gues
             
         },
         locale: 'en'
-    };
+    });
     
     const expected = {
         '\u0041\u006d\u0065\u0301\u006c\u0069\u0065': 'white/french',

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { characterCompletions, closingCompletions, dialogueCompletions, handleCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from "../src/completions";
+import { CompletionsProvider, characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from "../src/completions";
 import { parse } from 'fountain-parser';
 import { trimIndent } from './trimIndent';
 
@@ -21,15 +21,19 @@ const documents = [
     }
 ]
 
-const completionHandler = handleCompletions(
-    Object.fromEntries(documents.map(({ uri, content }) => [uri, parse(content)])),
-    Object.fromEntries(documents.map(({ uri, content }) => [uri, content.split('\n')]))
-)
+const documentData = Object.fromEntries(documents.map(doc => ([doc.uri, {script: parse(doc.content), lines: doc.content.split('\n')}])))
+
+const prov = new CompletionsProvider({
+    getParsedScript(uri) {
+        return documentData[uri];
+    },
+})
+
 
 describe("Completions", () => {
     describe("handleCompletions", () => {
         it(`should return openings, title page and scene completions for an empty document`, async () => {
-            const completions = completionHandler({ position: { character: 0, line: 0 }, textDocument: { uri: 'emptydocument' } })
+            const completions = prov.handleCompletions({ position: { character: 0, line: 0 }, textDocument: { uri: 'emptydocument' } })
             titlePageCompletions("", parse("")).forEach(completion => {
                 expect(completions).to.deep.contain(completion);
             });
@@ -42,14 +46,14 @@ describe("Completions", () => {
         });
 
         it(`should return title page completions only if we're inside the title page`, async () => {
-            const completions = completionHandler({ position: { character: 0, line: 0 }, textDocument: { uri: 'titlepage' } })
+            const completions = prov.handleCompletions({ position: { character: 0, line: 0 }, textDocument: { uri: 'titlepage' } })
             expect(completions).to.deep.equal(titlePageCompletions(sampleScript.split('\n')[0], parse(sampleScript)));
         });
 
         it(`should return openings, scenes, characters, dialogue, transitions, and closings if past the title page`, async () => {
             const line = 'INT. MY SCENE'
             const scr = parse(sampleScript);
-            const actual = completionHandler({ position: { character: 0, line: 3 }, textDocument: { uri: 'titlepage' } })
+            const actual = prov.handleCompletions({ position: { character: 0, line: 3 }, textDocument: { uri: 'titlepage' } })
             const expected = [
                 ...openingCompletions(line, scr),
                 ...sceneCompletions(line, scr),

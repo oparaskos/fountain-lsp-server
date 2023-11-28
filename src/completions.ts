@@ -2,7 +2,6 @@ import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from "
 import { FountainTitlePage, FountainScript } from "fountain-parser";
 import { isTitlePage } from "./util/isTitlePage";
 
-
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
 * White Draft (original)
 * Blue Revision
@@ -120,30 +119,38 @@ export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocu
     return completions;
 };
 
-export const handleCompletions = (parsedDocuments: Record<string, FountainScript>, lines: Record<string, string[]>) => (documentPosition: TextDocumentPositionParams): CompletionItem[] => {
-    const completions: CompletionItem[] = [];
+export class CompletionsProvider {
+    constructor(private languageServer: { getParsedScript: (uri: string) => { lines: string[], script: FountainScript } }) { }
 
-    const parsedScript = parsedDocuments[documentPosition.textDocument.uri];
-    const currentLine = lines[documentPosition.textDocument.uri][documentPosition.position.line];
+    public resolveCompletion(item: CompletionItem): CompletionItem {
+        return item;
+    };
 
-    // Blank page...
-    if (lines[documentPosition.textDocument.uri].join("").trim().length === 0) {
-        completions.push(...openingCompletions(currentLine, parsedScript));
-        completions.push(...titlePageCompletions(currentLine, parsedScript));
-        completions.push(...sceneCompletions(currentLine, parsedScript));
+    public handleCompletions(documentPosition: TextDocumentPositionParams): CompletionItem[] {
+        const completions: CompletionItem[] = [];
+
+        const { script: parsedScript, lines } = this.languageServer.getParsedScript(documentPosition.textDocument.uri)
+        const currentLine = lines[documentPosition.position.line];
+
+        // Blank page...
+        if (lines.join("").trim().length === 0) {
+            completions.push(...openingCompletions(currentLine, parsedScript));
+            completions.push(...titlePageCompletions(currentLine, parsedScript));
+            completions.push(...sceneCompletions(currentLine, parsedScript));
+            return completions;
+        }
+
+        // Not a blank page.
+        if (isTitlePage(documentPosition, parsedScript)) {
+            completions.push(...titlePageCompletions(currentLine, parsedScript));
+        } else {
+            completions.push(...openingCompletions(currentLine, parsedScript));
+            completions.push(...sceneCompletions(currentLine, parsedScript));
+            completions.push(...characterCompletions(currentLine, parsedScript));
+            completions.push(...dialogueCompletions(currentLine, parsedScript));
+            completions.push(...transitionCompletions(currentLine, parsedScript));
+            completions.push(...closingCompletions(currentLine, parsedScript));
+        }
         return completions;
-    }
-
-    // Not a blank page.
-    if (isTitlePage(documentPosition, parsedScript)) {
-        completions.push(...titlePageCompletions(currentLine, parsedScript));
-    } else {
-        completions.push(...openingCompletions(currentLine, parsedScript));
-        completions.push(...sceneCompletions(currentLine, parsedScript));
-        completions.push(...characterCompletions(currentLine, parsedScript));
-        completions.push(...dialogueCompletions(currentLine, parsedScript));
-        completions.push(...transitionCompletions(currentLine, parsedScript));
-        completions.push(...closingCompletions(currentLine, parsedScript));
-    }
-    return completions;
-};
+    };
+}

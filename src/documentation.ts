@@ -8,7 +8,7 @@ const EMPTY_DOCS = {
     contents: ""
 };
 
-class DocumentationProvider {
+export class DocumentationProvider {
     constructor(private docsFolderPath = path.normalize(path.join(__dirname, 'fountain-docs'))) { }
 
     @memoize()
@@ -30,6 +30,3 @@ class DocumentationProvider {
         }
     }
 }
-
-const _instance = new DocumentationProvider();
-export const getDocumentation = _instance.getDocumentation.bind(_instance);
