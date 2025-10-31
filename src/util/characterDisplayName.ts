@@ -23,7 +23,7 @@ function getGenderIcon(gender: string | null | undefined): string | null {
         if (genderIcon) {
             return `(${genderIcon})`;
         }
-        return `(${gender})`
+        return `(${gender})`;
     }
     return null;
 }

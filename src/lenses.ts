@@ -52,7 +52,7 @@ export function scenesLens(lines: string[], parsedScript: FountainScript, uri: s
 export const handleCodeLens = (
     parsedDocuments: Record<string, FountainScript>,
     lines: Record<string, string[]>,
-    params: { textDocument: { uri: any; }; }) => {
+    params: { textDocument: { uri: string; }; }) => {
     const uri = params.textDocument.uri;
     const parsedScript = parsedDocuments[uri];
     return [

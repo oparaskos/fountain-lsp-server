@@ -83,7 +83,7 @@ export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocu
     const completions: CompletionItem[] = [];
     const titlePage = parsedDocument.children[0];
     const attributes = (titlePage as FountainTitlePage)?.attributes || {};
-    const attributeNames = Object.keys(attributes).map(it => it.replace(' ', '_').toLowerCase())
+    const attributeNames = Object.keys(attributes).map(it => it.replace(' ', '_').toLowerCase());
     if (!attributeNames.includes("title"))
         completions.push({ label: "Title", detail: "The title of the screenplay", kind: CompletionItemKind.Property });
     if (!attributeNames.includes("credit"))
@@ -124,12 +124,12 @@ export class CompletionsProvider {
 
     public resolveCompletion(item: CompletionItem): CompletionItem {
         return item;
-    };
+    }
 
     public handleCompletions(documentPosition: TextDocumentPositionParams): CompletionItem[] {
         const completions: CompletionItem[] = [];
 
-        const { script: parsedScript, lines } = this.languageServer.getParsedScript(documentPosition.textDocument.uri)
+        const { script: parsedScript, lines } = this.languageServer.getParsedScript(documentPosition.textDocument.uri);
         const currentLine = lines[documentPosition.position.line];
 
         // Blank page...
@@ -152,5 +152,5 @@ export class CompletionsProvider {
             completions.push(...closingCompletions(currentLine, parsedScript));
         }
         return completions;
-    };
+    }
 }

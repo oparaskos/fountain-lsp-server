@@ -11,7 +11,7 @@ describe("Documentation", () => {
 
     for (const topic of documentedTopics) {
         it(`should return the contents of 'syntax.${topic}.md' for '${topic}'`, async () => {
-            const expected = { contents: readFileSync(`${__dirname}/../src/fountain-docs/syntax.${topic}.md`, 'utf-8').toString() }
+            const expected = { contents: readFileSync(`${__dirname}/../src/fountain-docs/syntax.${topic}.md`, 'utf-8').toString() };
             expect(await dp.getDocumentation(topic)).to.deep.equal(expected);
         });
     }

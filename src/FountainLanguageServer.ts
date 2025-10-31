@@ -39,8 +39,8 @@ export class FountainLanguageServer {
     private parsedDocuments: { [uri: string]: FountainScript; } = {};
     private lines: { [uri: string]: string[]; } = {};
 
-    private documentationProvider = new DocumentationProvider()
-    private completionsProvider = new CompletionsProvider(this)
+    private documentationProvider = new DocumentationProvider();
+    private completionsProvider = new CompletionsProvider(this);
 
     constructor(private connection: Connection, private documents: TextDocuments<TextDocument>) {
         // Only keep settings for open documents
@@ -91,8 +91,8 @@ export class FountainLanguageServer {
         return result;
     };
 
-    public handleChangeWorkspaceFolders(params: WorkspaceFoldersChangeEvent): any {
-        logger.log('Workspace folder change event received.');
+    public handleChangeWorkspaceFolders(params: WorkspaceFoldersChangeEvent) {
+        logger.log('Workspace folder change event received.', params);
     }
 
     public handleConfigurationChange(change: DidChangeConfigurationParams) {
@@ -122,12 +122,12 @@ export class FountainLanguageServer {
                     if (this.lines[change.uri]) {
                         delete this.lines[change.uri];
                     }
-                default:
-                    if (change.uri.includes('.fountainrc')) clearConfigCache();
+                    break;
             }
+            if (change.uri.includes('.fountainrc')) clearConfigCache();
         });
     
-    };
+    }
     
     public async handleHover(params: HoverParams) {
         const uri = params.textDocument.uri;
@@ -138,7 +138,7 @@ export class FountainLanguageServer {
             return await this.documentationProvider.getDocumentation(deepestHoveredElement.type);
         }
         return null;
-    };
+    }
     
     public handleCodeLens(params: CodeLensParams) { return handleCodeLens(this.parsedDocuments, this.lines, params); }
 
@@ -155,7 +155,7 @@ export class FountainLanguageServer {
         return this.completionsProvider.resolveCompletion(completion);
     }
 
-    public async onCharactersStatsRequest(params: any) {
+    public async onCharactersStatsRequest(params: {uri: string}) {
         try {
             const settings = await this.getDocumentSettings(params.uri);
             const parsedScript = this.parsedDocuments[params.uri];
@@ -170,21 +170,21 @@ export class FountainLanguageServer {
         }
     }
 
-    public async onLocationsStatsRequest(params: any) {
+    public async onLocationsStatsRequest(params:  {uri: string}) {
         const parsedScript = this.parsedDocuments[params.uri];
         const result = parsedScript.statsPerLocation;
         return result;
     }
 
-    public async onScenesStatsRequest(params: any) {
+    public async onScenesStatsRequest(params:  {uri: string}) {
         const parsedScript = this.parsedDocuments[params.uri];
         const result = parsedScript.statsPerScene;
         return result;
     }
 
-    public async onDocumentStatsRequest(params: any) {
+    public async onDocumentStatsRequest(params:  {uri: string}) {
         const parsedScript = this.parsedDocuments[params.uri];
-        const countedLines = this.lines[params.uri].filter(line => line.replace(/[^\w]+/,'').trim().length > 0)
+        const countedLines = this.lines[params.uri].filter(line => line.replace(/[^\w]+/,'').trim().length > 0);
 
         return {
             NumPages: naiveNumPages(parsedScript),

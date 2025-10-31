@@ -17,7 +17,7 @@ export class DocumentationProvider {
             const documentPath = path.join(this.docsFolderPath, `syntax.${topic}.md`);
             try {
                 if ((await stat(documentPath)).isFile()) {
-                    const buf = await readFile(documentPath, 'utf8')
+                    const buf = await readFile(documentPath, 'utf8');
                     return { contents: buf.toString() };
                 }
             } catch (e) {
