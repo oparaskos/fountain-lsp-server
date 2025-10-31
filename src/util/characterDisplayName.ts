@@ -16,14 +16,14 @@ function titleCase(str: string): string {
         .join(' ');
 }
 
-function getGenderIcon(gender: string | null): string | null {
+function getGenderIcon(gender: string | null | undefined): string | null {
     if (gender) {
         const genderIcon = genderIcons[gender.toLowerCase()?.replace(/[^a-z]/, '')];
         if (genderIcon) {
             return `(${genderIcon})`;
         }
     }
-    return ''
+    return null
 }
 
 export function characterDisplayName(characterStats: Partial<EnrichedCharacterStats>) {
