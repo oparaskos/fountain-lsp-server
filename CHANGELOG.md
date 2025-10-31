@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.3...v1.0.4) (2025-10-31)
+
+
+### Bug Fixes
+
+* build and added test ([b9d8596](https://github.com/oparaskos/fountain-lsp-server/commit/b9d859677d8e64b967b2f7a7e62107a240535696))
+* lint ([6f50804](https://github.com/oparaskos/fountain-lsp-server/commit/6f50804140d09d1987574a4f2f6f717ebcf74359))
+* type error ([ade2f8e](https://github.com/oparaskos/fountain-lsp-server/commit/ade2f8ecae7f42d3f115c4f6098d1a04201370c7))
+
 ## [1.0.3](https://github.com/oparaskos/fountain-lsp-server/compare/v1.0.2...v1.0.3) (2023-11-23)
 
 
