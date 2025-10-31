@@ -1,4 +1,5 @@
 import { EnrichedCharacterStats } from '../config/EnrichedCharacterStats';
+import { UNKNOWN_GENDER } from '../guessGender';
 
 const genderIcons: {[k: string]: string} = {
     male: "♂",
@@ -17,13 +18,14 @@ function titleCase(str: string): string {
 }
 
 function getGenderIcon(gender: string | null | undefined): string | null {
-    if (gender) {
+    if (gender && gender != UNKNOWN_GENDER) {
         const genderIcon = genderIcons[gender.toLowerCase()?.replace(/[^a-z]/, '')];
         if (genderIcon) {
             return `(${genderIcon})`;
         }
+        return `(${gender})`
     }
-    return null
+    return null;
 }
 
 export function characterDisplayName(characterStats: Partial<EnrichedCharacterStats>) {

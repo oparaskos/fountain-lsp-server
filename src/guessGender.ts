@@ -1,11 +1,11 @@
 import { getGender } from "gender-detection-from-name";
 import { FountainConfig } from './config/FountainConfig';
 
-const DEFAULT_LOCALE = "en" as const;
-const UNKNOWN_GENDER = 'unknown' as const;
-const GENDER_LABEL_MALE = 'male' as const;
-const GENDER_LABEL_FEMALE = 'female' as const;
-const SUPPORTED_LOCALES = ["en" as const, "it" as const];
+export const DEFAULT_LOCALE = "en" as const;
+export const UNKNOWN_GENDER = 'unknown' as const;
+export const GENDER_LABEL_MALE = 'male' as const;
+export const GENDER_LABEL_FEMALE = 'female' as const;
+export const SUPPORTED_LOCALES = ["en" as const, "it" as const];
 
 const WORDS_INDICATING_FEMALE_CHARACTER = [
 	"female",
