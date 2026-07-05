@@ -205,7 +205,10 @@ export class FountainLanguageServer {
             });
             this.documentSettings.set(resource, result);
         }
-        return result.then(it => it || FountainLanguageServer.GLOBAL_SETTINGS);
+        return result.then(it => ({
+            ...FountainLanguageServer.GLOBAL_SETTINGS,
+            ...(it || {})
+        }));
     }
     
     private async validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -254,4 +257,3 @@ function naiveNumPages(parsedScript: FountainScript) {
 
     return 1 + Math.ceil(numPageLines / pageHeight);// assume title page is one page.
 }
-
